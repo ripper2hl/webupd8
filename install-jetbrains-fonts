@@ -1,0 +1,32 @@
+# Original author: Michalis Georgiou <mechmg93@gmail.comr>
+# Modified by Andrew http://www.webupd8.org <andrew@webupd8.org>
+# Modified by Israel Perales https://www.ingenieroperales.com <israel-perales@outlook.com>
+
+_wgeturl="$(curl -s https://api.github.com/repos/JetBrains/JetBrainsMono/releases/latest | grep tarball | cut -d '"' -f 4)"
+_gf="jetbrainsmono"
+
+# make sure a file with the same name doesn't already exist
+rm -f $_gf.tar.gz
+
+echo "Connecting to Github server..."
+wget $_wgeturl -O $_gf.tar.gz
+
+# Create fonts directory
+mkdir -p ~/.local/share/fonts/
+
+# Delete previus installation
+rm -r ~/.local/share/fonts/jetbrainsmono/
+
+echo "Extracting the downloaded archive..."
+tar -xf $_gf.tar.gz -C ~/.local/share/fonts/
+
+# move jetbrains directory
+mv ~/.local/share/fonts/Jet* ~/.local/share/fonts/$_gf
+
+echo "Updating the font cache"
+fc-cache -f > /dev/null
+
+# clean up, but only the .tar.gz, the user may need the folder
+rm -f $_gf.tar.gz
+
+echo "Done."
